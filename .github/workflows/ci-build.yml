@@ -32,7 +32,7 @@ jobs:
           sed -i "s|#{versionid}#|${{ env.VERSION }}|g" pom.xml
           echo "Updated pom.xml version to ${{ env.VERSION }}"
 
-      # Step 4: Capture tools path & versions into env
+      # Step 4: Capture tools path & versions
       - name: Set environment variables for tools
         run: |
           echo "JAVA_PATH=$(which java)" >> $GITHUB_ENV
@@ -47,7 +47,6 @@ jobs:
           echo "NODE_VERSION=$(node -v)" >> $GITHUB_ENV
           echo "NPM_VERSION=$(npm -v)" >> $GITHUB_ENV
 
-      # Step 5: Print the captured values
       - name: Show tool info
         run: |
           echo "Java Path: $JAVA_PATH"
@@ -61,19 +60,20 @@ jobs:
           echo "npm Path: $NPM_PATH"
           echo "npm Version: $NPM_VERSION"
 
-      # Step 6: Build with Maven
+      # Step 5: Build with Maven
       - name: Build with Maven
         run: mvn clean install -B
 
+      # Step 6: Check build artifacts
       - name: Path Check
         run: |
-          ls
           pwd
-          cd target/
-          ls
+          ls -l target/
 
-      - name: Build Docker Image
+      # Step 7: Build the Docker image
+      - name: Build the Docker image
         run: |
-          IMAGE_NAME=hello-world-app:${{ env.VERSION }}
-          echo "Building Docker image: $IMAGE_NAME"
-          docker build -t $IMAGE_NAME .
+          echo "Building Docker image..."
+          docker build \
+            --build-arg JAR_FILE=target/hello-world-1.0.0.jar \
+            -t hello-world-app:${{ env.VERSION }} .
