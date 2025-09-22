@@ -1,0 +1,14 @@
+name: Hello Workflow
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:   # allows manual trigger
+
+jobs:
+  say-hello:
+    runs-on: dev-runner-grp
+    steps:
+      - name: Print Hello
+        run: echo "Hello from GitHub Actions 🎉"
