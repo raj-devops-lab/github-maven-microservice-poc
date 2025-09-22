@@ -8,7 +8,7 @@ on:
 
 jobs:
   say-hello:
-    runs-on: dev-runner-grp
+    runs-on: "dev-runner-grp"
     steps:
       - name: Print Hello
         run: echo "Hello from GitHub Actions 🎉"
