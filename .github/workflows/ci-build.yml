@@ -71,3 +71,9 @@ jobs:
           pwd
           cd target/
           ls
+
+      - name: Build Docker Image
+        run: |
+          IMAGE_NAME=hello-world-app:${{ env.VERSION }}
+          echo "Building Docker image: $IMAGE_NAME"
+          docker build -t $IMAGE_NAME .
