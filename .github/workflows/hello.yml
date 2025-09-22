@@ -4,15 +4,17 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch:   # allows manual trigger
+  workflow_dispatch:
 
 concurrency:
-  group: hello-workflow-${{ github.ref }} # cancel runs for the same branch
+  group: hello-workflow-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   say-hello:
-    runs-on: dev-runner-grp   # or ubuntu-latest if you want GitHub runner
+    runs-on:
+      group: dev-runner-grp
+      labels: [self-hosted, Linux, X64]
     steps:
       - name: Print Hello
         run: echo "Hello from GitHub Actions 🎉"
