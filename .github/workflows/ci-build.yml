@@ -44,6 +44,8 @@ jobs:
         with:
           distribution: temurin
           java-version: 17
+          cache: maven
+
 
       # Step 5: Build with Maven
       - name: Build with Maven
