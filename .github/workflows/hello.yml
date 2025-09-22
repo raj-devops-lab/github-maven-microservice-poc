@@ -6,9 +6,13 @@ on:
       - main
   workflow_dispatch:   # allows manual trigger
 
+concurrency:
+  group: hello-workflow-${{ github.ref }} # cancel runs for the same branch
+  cancel-in-progress: true
+
 jobs:
   say-hello:
-    runs-on: "dev-runner-grp"
+    runs-on: dev-runner-grp   # or ubuntu-latest if you want GitHub runner
     steps:
       - name: Print Hello
         run: echo "Hello from GitHub Actions 🎉"
