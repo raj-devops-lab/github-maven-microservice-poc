@@ -1,0 +1,50 @@
+name: CI Build
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on:
+      group: dev-runner-grp
+      labels: [self-hosted, Linux, X64]
+
+    steps:
+      # Step 1: Checkout repo
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Step 2: Read version from version.txt
+      - name: Read version
+        id: get_version
+        run: |
+          VERSION=$(cat version.txt)
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "Using version: $VERSION"
+
+      # Step 3: Replace placeholder in pom.xml
+      - name: Update pom.xml version
+        run: |
+          sed -i "s|#{versionid}#|${{ env.VERSION }}|g" pom.xml
+          echo "Updated pom.xml version to ${{ env.VERSION }}"
+
+      - name: print Pom File
+        run: |
+          ls
+          pwd
+          cat pom.xml
+
+      # Step 4: Set up JDK
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      # Step 5: Build with Maven
+      - name: Build with Maven
+        run: mvn clean install -B
