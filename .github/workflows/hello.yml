@@ -18,3 +18,28 @@ jobs:
     steps:
       - name: Print Hello
         run: echo "Hello from GitHub Actions 🎉"
+
+      - name: Show Java path & version
+        run: |
+          which java || echo "Java not found"
+          java -version || true
+
+      - name: Show Maven path & version
+        run: |
+          which mvn || echo "Maven not found"
+          mvn -v || true
+
+      - name: Show Docker path & version
+        run: |
+          which docker || echo "Docker not found"
+          docker --version || true
+
+      - name: Show Node.js path & version
+        run: |
+          which node || echo "Node.js not found"
+          node -v || true
+
+      - name: Show npm path & version
+        run: |
+          which npm || echo "npm not found"
+          npm -v || true
