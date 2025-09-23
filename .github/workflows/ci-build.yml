@@ -81,5 +81,5 @@ jobs:
       - name: Build the Docker image
         run: |
           echo "Building Docker image..."
-          docker build -t hello-world-app:${{ env.VERSION }} .
+          docker buildx build -t hello-world-app:${{ env.VERSION }} .
 
