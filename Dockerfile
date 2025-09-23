@@ -1,4 +1,4 @@
-FROM eclipse-temurin:17-jdk-jammy
+FROM eclipse-temurin:17-jdk
 
 # Create non-root user
 RUN groupadd -g 1001 -r platform_user && \
