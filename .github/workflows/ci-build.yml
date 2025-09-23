@@ -18,7 +18,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Step 2: Read version from version.txt
+      # ✅ Step 2: Login to Docker Hub
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # Step 3: Read version from version.txt
       - name: Read version
         id: get_version
         run: |
@@ -26,13 +33,13 @@ jobs:
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           echo "Using version: $VERSION"
 
-      # Step 3: Replace placeholder in pom.xml
+      # Step 4: Replace placeholder in pom.xml
       - name: Update pom.xml version
         run: |
           sed -i "s|#{versionid}#|${{ env.VERSION }}|g" pom.xml
           echo "Updated pom.xml version to ${{ env.VERSION }}"
 
-      # Step 4: Capture tools path & versions
+      # Step 5: Capture tools path & versions
       - name: Set environment variables for tools
         run: |
           echo "JAVA_PATH=$(which java)" >> $GITHUB_ENV
@@ -60,17 +67,17 @@ jobs:
           echo "npm Path: $NPM_PATH"
           echo "npm Version: $NPM_VERSION"
 
-      # Step 5: Build with Maven
+      # Step 6: Build with Maven
       - name: Build with Maven
         run: mvn clean install -B
 
-      # Step 6: Check build artifacts
+      # Step 7: Check build artifacts
       - name: Path Check
         run: |
           pwd
           ls -l target/
 
-      # Step 7: Build the Docker image
+      # Step 8: Build the Docker image
       - name: Build the Docker image
         run: |
           echo "Building Docker image..."
