@@ -20,10 +20,13 @@
 
 FROM eclipse-temurin:17-jdk
 
+# Set working directory
 WORKDIR /platform
+
+# Copy built jar and entrypoint with correct permissions
 COPY target/*.jar /platform/app.jar
-COPY entrypoint.sh /platform/entrypoint.sh
+COPY --chmod=755 entrypoint.sh /platform/entrypoint.sh
 
-RUN chmod +x /platform/entrypoint.sh
-
+# Run the service
 ENTRYPOINT ["/platform/entrypoint.sh"]
+
