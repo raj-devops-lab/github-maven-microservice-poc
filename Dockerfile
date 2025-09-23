@@ -1,29 +1,17 @@
-# ==========================================
-# Stage 1: Build the Java application with Maven
-# ==========================================
-FROM maven:3.9.9-eclipse-temurin-17 AS build
+FROM openjdk:17
 
-WORKDIR /app
+RUN groupadd -g 1001 -r platform_user &&  useradd -r -u  1001 -g platform_user platform_user
 
-# Copy pom.xml and download dependencies first (better caching)
-COPY . .
-RUN mvn dependency:go-offline -B
+RUN mkdir /platform && chown -R platform_user  /platform
 
-# Copy the source and build
-COPY src ./src
-RUN mvn clean package -DskipTests
+ADD --chown=platform_user:platform_user /target/*.jar /platform
 
-# ==========================================
-# Stage 2: Run the application
-# ==========================================
-FROM eclipse-temurin:17-jdk-jammy
+COPY --chown-platform_user:platform_user entrypoint.sh /platformentrypoint.sh
 
-WORKDIR /app
+RUN ["chmod", "+x", "/platform/entrypoint.sh"]
 
-# Copy only the JAR file from build stage
-COPY --from=build /app/target/*.jar app.jar
-COPY entrypoint.sh /entrypoint.sh
+USER platform_user
 
-RUN chmod +x /entrypoint.sh
+WORKDIR platform_user
 
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["/platform/entrypoint.sh"]

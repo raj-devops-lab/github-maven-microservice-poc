@@ -1,8 +1,11 @@
-#!/bin/bash
-set -e
+#! /bin/bash
 
-echo "======================================="
-echo " 🚀 Starting HelloWorld Application"
-echo "======================================="
+echo "Starting JAVA Based Microservice Deployment......."
 
-exec java -jar /app/app.jar
+cd /platform
+
+echo "JAVA_HOME={JAVA_HOME}"
+
+java -jar *.jar
+
+echo "Stopping Micorservice......."
