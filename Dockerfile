@@ -7,8 +7,8 @@ RUN groupadd -g 1001 -r platform_user && \
 RUN mkdir /platform && chown -R platform_user:platform_user /platform
 
 # Copy the built jar into the container as app.jar
-COPY --chown=platform_user:platform_user target/*.jar /platform/app.jar
-COPY --chown=platform_user:platform_user entrypoint.sh /platform/entrypoint.sh
+# COPY --chown=platform_user:platform_user target/*.jar /platform/app.jar
+# COPY --chown=platform_user:platform_user entrypoint.sh /platform/entrypoint.sh
 
 RUN chmod +x /platform/entrypoint.sh
 
