@@ -1,13 +1,13 @@
 #!/bin/bash
 set -e
 
-echo "Starting JAVA Based Microservice Deployment......."
+echo "==============================================="
+echo " Starting JAVA Based Microservice Deployment..."
+echo "==============================================="
 
 cd /platform
 
-echo "JAVA_HOME=$JAVA_HOME"
-echo "Java version:"
-java -version
+echo "JAVA_HOME=${JAVA_HOME}"
+echo "Running JAR: app.jar"
 
-# Run the JAR (replace shell with Java for signal handling)
 exec java -jar app.jar

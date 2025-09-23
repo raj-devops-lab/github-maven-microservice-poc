@@ -81,6 +81,5 @@ jobs:
       - name: Build the Docker image
         run: |
           echo "Building Docker image..."
-          docker build \
-            --build-arg JAR_FILE=target/hello-world-1.0.0.jar \
-            -t hello-world-app:${{ env.VERSION }} .
+          docker build -t hello-world-app:${{ env.VERSION }} .
+
