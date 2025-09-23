@@ -6,7 +6,7 @@ RUN mkdir /platform && chown -R platform_user  /platform
 
 ADD --chown=platform_user:platform_user /target/*.jar /platform
 
-COPY --chown-platform_user:platform_user entrypoint.sh /platform/entrypoint.sh
+COPY --chown=platform_user:platform_user entrypoint.sh /platform/entrypoint.sh
 
 RUN ["chmod", "+x", "/platform/entrypoint.sh"]
 
