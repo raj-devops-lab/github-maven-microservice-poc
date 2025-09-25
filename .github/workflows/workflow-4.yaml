@@ -1,6 +1,10 @@
 name: Mixed Stress Test with Logs
 
 on:
+  push:
+    branches:
+      - main
+  pull_request:
   workflow_dispatch:
 
 jobs:
