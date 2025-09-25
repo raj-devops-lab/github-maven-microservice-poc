@@ -14,7 +14,7 @@ jobs:
       labels: [self-hosted, Linux, ARM64]
 
     steps:
-      # Step 1: Checkout repository
+      # Step 1: Checkout repo
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -39,52 +39,44 @@ jobs:
           sed -i "s|#{versionid}#|${{ env.VERSION }}|g" pom.xml
           echo "Updated pom.xml version to ${{ env.VERSION }}"
 
-      # Step 5: Set environment variables
+      # Step 5: Set dynamic JAVA_HOME, PATH, and other tool paths
       - name: Set environment variables for tools
         run: |
-          # Set JAVA_HOME explicitly to the JDK root
-          echo "JAVA_HOME=/usr/lib/jvm/temurin-17-jdk" >> $GITHUB_ENV
+          # Detect JAVA_HOME dynamically
+          export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which javac))))
+          export PATH=$JAVA_HOME/bin:$PATH
+
+          echo "JAVA_HOME=$JAVA_HOME" >> $GITHUB_ENV
           echo "PATH=$JAVA_HOME/bin:$PATH" >> $GITHUB_ENV
 
-          # Capture other tool paths
+          # Other tools
           echo "MAVEN_PATH=$(which mvn)" >> $GITHUB_ENV
           echo "DOCKER_PATH=$(which docker)" >> $GITHUB_ENV
           echo "NODE_PATH=$(which node)" >> $GITHUB_ENV
           echo "NPM_PATH=$(which npm)" >> $GITHUB_ENV
 
-          # Capture versions
-          echo "JAVA_VERSION=$(java -version 2>&1 | head -n 1)" >> $GITHUB_ENV
-          echo "MAVEN_VERSION=$(mvn -v | head -n 1)" >> $GITHUB_ENV
-          echo "DOCKER_VERSION=$(docker --version)" >> $GITHUB_ENV
-          echo "NODE_VERSION=$(node -v)" >> $GITHUB_ENV
-          echo "NPM_VERSION=$(npm -v)" >> $GITHUB_ENV
+          # Show versions
+          java -version
+          javac -version
+          mvn -v
+          docker --version
+          node -v
+          npm -v
 
-      # Step 6: Show tool info
-      - name: Show tool info
-        run: |
-          echo "JAVA_HOME: $JAVA_HOME"
-          echo "Java Version: $JAVA_VERSION"
-          echo "Maven Path: $MAVEN_PATH"
-          echo "Maven Version: $MAVEN_VERSION"
-          echo "Docker Path: $DOCKER_PATH"
-          echo "Docker Version: $DOCKER_VERSION"
-          echo "Node Path: $NODE_PATH"
-          echo "Node Version: $NODE_VERSION"
-          echo "npm Path: $NPM_PATH"
-          echo "npm Version: $NPM_VERSION"
-
-      # Step 7: Build with Maven
+      # Step 6: Build with Maven
       - name: Build with Maven
-        run: mvn clean install -B
+        run: |
+          export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which javac))))
+          export PATH=$JAVA_HOME/bin:$PATH
+          mvn clean install -B
 
-      # Step 8: Check build artifacts
+      # Step 7: Check build artifacts
       - name: Path Check
         run: |
           pwd
           ls -l target/
 
-      # Step 9: Build the Docker image
+      # Step 8: Build the Docker image
       - name: Build the Docker image
         run: |
-          echo "Building Docker image..."
-          docker build -t hello-world-app:${{ env.VERSION }} .
+          docker buildx build --platform linux/arm64 -t hello-world-app:${{ env.VERSION }} .
