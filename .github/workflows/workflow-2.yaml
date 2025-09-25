@@ -1,0 +1,30 @@
+name: Memory Stress Test with Logs
+
+on:
+  workflow_dispatch:
+
+jobs:
+  stress-mem:
+    runs-on:
+      group: dev-runner-grp
+      labels: [self-hosted, Linux, ARM64]
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install stress-ng and procps
+        run: sudo apt-get update && sudo apt-get install -y stress-ng procps
+
+      - name: Run Memory stress for 20 minutes with usage logs
+        run: |
+          MEM_TOTAL=$(grep MemTotal /proc/meminfo | awk '{print $2}')
+          MEM_MB=$((MEM_TOTAL / 1024))
+          STRESS_MEM=$((MEM_MB * 75 / 100))
+          echo "Starting Memory stress using $STRESS_MEM MB for 20 minutes..."
+          for i in {1..40}; do
+            echo "=== Memory usage snapshot $(date) ==="
+            free -m
+            sleep 30 &
+          done &
+          stress-ng --vm 1 --vm-bytes ${STRESS_MEM}M --timeout 1200s --metrics-brief

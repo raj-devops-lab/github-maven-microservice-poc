@@ -1,0 +1,27 @@
+name: CPU Stress Test with Logs
+
+on:
+  workflow_dispatch:
+
+jobs:
+  stress-cpu:
+    runs-on:
+      group: dev-runner-grp
+      labels: [self-hosted, Linux, ARM64]
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install stress-ng and procps
+        run: sudo apt-get update && sudo apt-get install -y stress-ng procps
+
+      - name: Run CPU stress for 20 minutes with usage logs
+        run: |
+          echo "Starting CPU stress for 20 minutes..."
+          for i in {1..40}; do
+            echo "=== CPU usage snapshot $(date) ==="
+            top -b -n 1 | head -n 10
+            sleep 30 &
+          done &
+          stress-ng --cpu $(nproc) --timeout 1200s --metrics-brief

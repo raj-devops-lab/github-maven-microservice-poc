@@ -1,0 +1,28 @@
+name: I/O Stress Test with Logs
+
+on:
+  workflow_dispatch:
+
+jobs:
+  stress-io:
+    runs-on:
+      group: dev-runner-grp
+      labels: [self-hosted, Linux, ARM64]
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install stress-ng and procps
+        run: sudo apt-get update && sudo apt-get install -y stress-ng procps
+
+      - name: Run I/O stress for 20 minutes with usage logs
+        run: |
+          echo "Starting I/O stress for 20 minutes..."
+          for i in {1..40}; do
+            echo "=== CPU & Memory snapshot $(date) ==="
+            top -b -n 1 | head -n 10
+            free -m
+            sleep 30 &
+          done &
+          stress-ng --hdd $(nproc) --hdd-bytes 1G --timeout 1200s --metrics-brief
