@@ -11,7 +11,7 @@ jobs:
   build:
     runs-on:
       group: dev-runner-grp
-      llabels: [self-hosted, Linux, ARM64]
+      labels: [self-hosted, Linux, ARM64]
 
     steps:
       # Step 1: Checkout repo
