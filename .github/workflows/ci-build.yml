@@ -14,11 +14,11 @@ jobs:
       labels: [self-hosted, Linux, ARM64]
 
     steps:
-      # Step 1: Checkout repo
+      # Step 1: Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # ✅ Step 2: Login to Docker Hub
+      # Step 2: Login to Docker Hub
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
@@ -39,24 +39,30 @@ jobs:
           sed -i "s|#{versionid}#|${{ env.VERSION }}|g" pom.xml
           echo "Updated pom.xml version to ${{ env.VERSION }}"
 
-      # Step 5: Capture tools path & versions
+      # Step 5: Set environment variables
       - name: Set environment variables for tools
         run: |
-          echo "JAVA_PATH=$(which java)" >> $GITHUB_ENV
+          # Set JAVA_HOME explicitly to the JDK root
+          echo "JAVA_HOME=/usr/lib/jvm/temurin-17-jdk" >> $GITHUB_ENV
+          echo "PATH=$JAVA_HOME/bin:$PATH" >> $GITHUB_ENV
+
+          # Capture other tool paths
           echo "MAVEN_PATH=$(which mvn)" >> $GITHUB_ENV
           echo "DOCKER_PATH=$(which docker)" >> $GITHUB_ENV
           echo "NODE_PATH=$(which node)" >> $GITHUB_ENV
           echo "NPM_PATH=$(which npm)" >> $GITHUB_ENV
 
+          # Capture versions
           echo "JAVA_VERSION=$(java -version 2>&1 | head -n 1)" >> $GITHUB_ENV
           echo "MAVEN_VERSION=$(mvn -v | head -n 1)" >> $GITHUB_ENV
           echo "DOCKER_VERSION=$(docker --version)" >> $GITHUB_ENV
           echo "NODE_VERSION=$(node -v)" >> $GITHUB_ENV
           echo "NPM_VERSION=$(npm -v)" >> $GITHUB_ENV
 
+      # Step 6: Show tool info
       - name: Show tool info
         run: |
-          echo "Java Path: $JAVA_PATH"
+          echo "JAVA_HOME: $JAVA_HOME"
           echo "Java Version: $JAVA_VERSION"
           echo "Maven Path: $MAVEN_PATH"
           echo "Maven Version: $MAVEN_VERSION"
@@ -67,19 +73,18 @@ jobs:
           echo "npm Path: $NPM_PATH"
           echo "npm Version: $NPM_VERSION"
 
-      # Step 6: Build with Maven
+      # Step 7: Build with Maven
       - name: Build with Maven
         run: mvn clean install -B
 
-      # Step 7: Check build artifacts
+      # Step 8: Check build artifacts
       - name: Path Check
         run: |
           pwd
           ls -l target/
 
-      # Step 8: Build the Docker image
+      # Step 9: Build the Docker image
       - name: Build the Docker image
         run: |
           echo "Building Docker image..."
-          docker buildx build --platform linux/arm64 -t hello-world-app:${{ env.VERSION }} .
-
+          docker build -t hello-world-app:${{ env.VERSION }} .
