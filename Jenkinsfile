@@ -26,6 +26,7 @@ pipeline {
       }
     }
 
+
     // stage('Validate Commit Message') {
     //   when { expression { env.BRANCH_NAME.startsWith("feature/") } }
     //   steps {
