@@ -20,7 +20,7 @@ spec:
     - cat
     tty: true
   - name: owasp
-    image: owasp/dependency-check:latest
+    image: ghcr.io/owasp/dependency-check:latest
     command:
     - cat
     tty: true
@@ -41,7 +41,6 @@ spec:
       steps {
         script {
           echo "📦 Handling version management for ${env.BRANCH_NAME}"
-          // You can add versioning logic here later if needed
         }
       }
     }
@@ -64,35 +63,36 @@ spec:
       }
     }
 
-  //   stage('SonarQube Scan') {
-  //     when { expression { false } } // enable later when SonarQube is configured
-  //     steps {
-  //       echo '🔍 Running SonarQube Scan...'
-  //     }
-  //   }
+    // stage('SonarQube Scan') {
+    //   when { expression { false } } // enable later when SonarQube is configured
+    //   steps {
+    //     echo '🔍 Running SonarQube Scan...'
+    //   }
+    // }
 
-  //   stage('OWASP Dependency Check') {
-  //     steps {
-  //       echo "🛡️ Running OWASP Dependency Check..."
-  //       container('owasp') {
-  //         sh '''
-  //           dependency-check.sh \
-  //             --project "${BRANCH_NAME}" \
-  //             --scan /home/jenkins/agent/workspace/${JOB_NAME} \
-  //             --format HTML \
-  //             --out /home/jenkins/agent/workspace/${JOB_NAME}/dependency-check-report
-  //         '''
-  //       }
-  //     }
-  //   }
+    // stage('OWASP Dependency Check') {
+    //   steps {
+    //     echo "🛡️ Running OWASP Dependency Check..."
+    //     container('owasp') {
+    //       sh '''
+    //         dependency-check.sh \
+    //           --project "${BRANCH_NAME}" \
+    //           --scan /home/jenkins/agent/workspace/${JOB_NAME} \
+    //           --format HTML \
+    //           --out /home/jenkins/agent/workspace/${JOB_NAME}/dependency-check-report
+    //       '''
+    //     }
+    //   }
+    // }
 
-  //   stage('Gitleaks Scan') {
-  //     when { expression { false } }
-  //     steps {
-  //       echo '🔐 Running Gitleaks Scan...'
-  //     }
-  //   }
-  // }
+    // stage('Gitleaks Scan') {
+    //   when { expression { false } }
+    //   steps {
+    //     echo '🔐 Running Gitleaks Scan...'
+    //   }
+    // }
+
+  } // 👈 this was missing before (closing "stages" block)
 
   post {
     always {
