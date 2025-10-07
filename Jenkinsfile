@@ -64,35 +64,35 @@ spec:
       }
     }
 
-    stage('SonarQube Scan') {
-      when { expression { false } } // enable later when SonarQube is configured
-      steps {
-        echo '🔍 Running SonarQube Scan...'
-      }
-    }
+  //   stage('SonarQube Scan') {
+  //     when { expression { false } } // enable later when SonarQube is configured
+  //     steps {
+  //       echo '🔍 Running SonarQube Scan...'
+  //     }
+  //   }
 
-    stage('OWASP Dependency Check') {
-      steps {
-        echo "🛡️ Running OWASP Dependency Check..."
-        container('owasp') {
-          sh '''
-            dependency-check.sh \
-              --project "${BRANCH_NAME}" \
-              --scan /home/jenkins/agent/workspace/${JOB_NAME} \
-              --format HTML \
-              --out /home/jenkins/agent/workspace/${JOB_NAME}/dependency-check-report
-          '''
-        }
-      }
-    }
+  //   stage('OWASP Dependency Check') {
+  //     steps {
+  //       echo "🛡️ Running OWASP Dependency Check..."
+  //       container('owasp') {
+  //         sh '''
+  //           dependency-check.sh \
+  //             --project "${BRANCH_NAME}" \
+  //             --scan /home/jenkins/agent/workspace/${JOB_NAME} \
+  //             --format HTML \
+  //             --out /home/jenkins/agent/workspace/${JOB_NAME}/dependency-check-report
+  //         '''
+  //       }
+  //     }
+  //   }
 
-    stage('Gitleaks Scan') {
-      when { expression { false } }
-      steps {
-        echo '🔐 Running Gitleaks Scan...'
-      }
-    }
-  }
+  //   stage('Gitleaks Scan') {
+  //     when { expression { false } }
+  //     steps {
+  //       echo '🔐 Running Gitleaks Scan...'
+  //     }
+  //   }
+  // }
 
   post {
     always {
