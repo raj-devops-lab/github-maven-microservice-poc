@@ -55,15 +55,18 @@ spec:
         container('maven') {
           sh 'mvn test'
         }
+
+        // ✅ Publish test results
+        junit '**/target/surefire-reports/*.xml'
       }
     }
 
-  } // 👈 end of stages
+  } // end of stages
 
   post {
     always {
       echo "✅ Pipeline finished for branch: ${env.BRANCH_NAME}"
-      echo "📄 Build artifacts and reports (if any) are in the workspace."
+      echo "📄 Build artifacts and test reports (if any) are in the workspace."
     }
   }
 }
