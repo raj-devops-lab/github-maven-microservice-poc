@@ -19,11 +19,6 @@ spec:
     command:
     - cat
     tty: true
-  - name: owasp
-    image: owasp/dependency-check:latest   # ✅ using DockerHub image
-    command:
-    - cat
-    tty: true
 """
     }
   }
@@ -55,35 +50,20 @@ spec:
     }
 
     stage('Run Tests') {
-      when { expression { true } } // skip for now if tests not ready
       steps {
+        echo "🧪 Running Maven Tests..."
         container('maven') {
           sh 'mvn test'
         }
       }
     }
 
-    // stage('OWASP Dependency Check') {
-    //   steps {
-    //     echo "🛡️ Running OWASP Dependency Check..."
-    //     container('owasp') {
-    //       sh '''
-    //         dependency-check.sh \
-    //           --project "${BRANCH_NAME}" \
-    //           --scan /home/jenkins/agent/workspace/${JOB_NAME} \
-    //           --format HTML \
-    //           --out /home/jenkins/agent/workspace/${JOB_NAME}/dependency-check-report
-    //       '''
-    //     }
-    //   }
-    // }
-
-  }
+  } // 👈 end of stages
 
   post {
     always {
       echo "✅ Pipeline finished for branch: ${env.BRANCH_NAME}"
-      echo "📄 Reports (if any) are in the workspace directory."
+      echo "📄 Build artifacts and reports (if any) are in the workspace."
     }
   }
 }
